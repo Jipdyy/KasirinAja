@@ -17,6 +17,24 @@
         <div class="relative z-10 w-full max-w-d">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xs border border-gray-200 dark:border-gray-700 p-6 md:p-8">
 
+                {{-- Header Login --}}
+                <div class="flex flex-col items-center text-center mb-6">
+                    {{-- Logo --}}
+                    <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md shadow-blue-500/20 dark:bg-blue-500">
+
+                    </div>
+
+                    {{-- Judul & Subjudul Generik --}}
+                    <h1 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+                        {{ config('app.name', 'Kasirin Aja') }}
+                    </h1>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Masuk ke akun Anda 
+                    </p>
+                </div>
+
+                {{-- Slot Form Login --}}
+                {{ $slot ?? '' }}
             </div>
         </div>
     </div>

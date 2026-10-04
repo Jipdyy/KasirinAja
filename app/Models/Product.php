@@ -15,13 +15,12 @@ class Product extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'category_id', 'name', 'price', 'stock', 'image', 'is_available', 'is_active',
+        'category_id', 'name', 'price', 'stock', 'image', 'is_active',
     ];
 
     protected $casts = [
         'price' => 'integer',
         'stock' => 'integer',
-        'is_available' => 'boolean',
         'is_active' => 'boolean',
     ];
 
@@ -61,8 +60,7 @@ class Product extends Model
     */
     public function scopeSellAble(Builder $query): Builder {
         return $query->where('is_active', true)
-                     ->where('is_available', true)
-                     ->where('stock', '>', 0);
+                     ->orWhere('stock', '>', 0);
     }
 
     /**
@@ -73,11 +71,11 @@ class Product extends Model
     public function scopeStatusIs(Builder $query, ?string $status): Builder {
         return $query->when($status, function ($q, $status) {
             if ($status === 'Tersedia'){
-                $q->where('is_available', true)
+                $q->where('is_active', true)
                   ->orWhere('stock', '>', 0);
             } else if ($status === 'Habis') {
                 $q->where(function ($subQuery){
-                    $subQuery->where('is_available', false)
+                    $subQuery->where('is_active', false)
                              ->orWhere('stock', '<=', 0);
                 }); 
             }
@@ -104,7 +102,7 @@ class Product extends Model
 
     protected function statusLabel(): Attribute {
         return Attribute::make(
-            get: fn () => ($this->is_available && $this->stock > 0) ? 'Tersedia' : 'Habis'
+            get: fn () => ($this->is_active && $this->stock > 0) ? 'Tersedia' : 'Habis'
         );
     }
 }

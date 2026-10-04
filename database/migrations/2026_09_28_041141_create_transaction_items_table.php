@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('transaction_id')->constrained()->restrictOnDelete();
             $table->foreignId('product_id')->constrained()->restrictOnDelete();
-            $table->string('product_name', 150); //diwakilkan product id
+            $table->string('product_name', 150);
             $table->unsignedInteger('price');
             $table->unsignedInteger('qty');
             $table->unsignedInteger('subtotal');

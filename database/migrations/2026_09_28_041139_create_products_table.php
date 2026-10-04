@@ -18,7 +18,6 @@ return new class extends Migration
             $table->unsignedInteger('price');
             $table->unsignedInteger('stock')->default(0);
             $table->string('image')->nullable();
-            $table->boolean('is_available')->default(true); //diganti
             $table->boolean('is_active')->default(true); 
             $table->timestamps();
             $table->softDeletes();
