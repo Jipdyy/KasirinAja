@@ -5,13 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{-- TODO: judul dinamis per halaman --}}</title>
 
+    <script>
+        if (localStorage.getItem('theme') === 'dark' ||
+            (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-50 dark:bg-gray-900">
+<body class="bg-gray-50 dark:bg-gray-900" x-data="{}">
 
     <x-layout.navbar />
 
-    {{-- <x-layout.sidebar /> --}}
+    <x-layout.sidebar />
 
     <main class="pt-16 lg:pl-64 min-h-screen">
         <div class="p-4 md:p-6">
@@ -24,5 +31,6 @@
         {{-- TODO: <x-ui.flash-message /> — dibuat di Tahap 2 --}}
     </div>
 
+    
 </body>
 </html>

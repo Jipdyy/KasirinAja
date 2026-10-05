@@ -59,8 +59,10 @@ class Product extends Model
      * @return \Illuminate\Database\Eloquent\Builder
     */
     public function scopeSellAble(Builder $query): Builder {
-        return $query->where('is_active', true)
-                     ->orWhere('stock', '>', 0);
+        return $query->where(function (Builder $q) {
+            $q->where('is_active', true)
+            ->orWhere('stock', '>', 0);
+        });
     }
 
     /**
@@ -69,15 +71,17 @@ class Product extends Model
      * @return \Illuminate\Database\Eloquent\Builder
     */
     public function scopeStatusIs(Builder $query, ?string $status): Builder {
-        return $query->when($status, function ($q, $status) {
-            if ($status === 'Tersedia'){
-                $q->where('is_active', true)
-                  ->orWhere('stock', '>', 0);
+        return $query->when($status, function (Builder $q, string $status) {
+            if ($status === 'Tersedia') {
+                $q->where(function (Builder $sub) {
+                    $sub->where('is_active', true)
+                        ->orWhere('stock', '>', 0);
+                });
             } else if ($status === 'Habis') {
-                $q->where(function ($subQuery){
-                    $subQuery->where('is_active', false)
-                             ->orWhere('stock', '<=', 0);
-                }); 
+                $q->where(function (Builder $sub) {
+                    $sub->where('is_active', false)
+                        ->orWhere('stock', '<=', 0);
+                });
             }
         });
     }

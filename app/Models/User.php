@@ -25,7 +25,6 @@ class User extends Authenticatable
 
     protected $casts = [
         'is_active' => 'boolean',
-        'last_login_at' => 'datetime',
         'password' => 'hashed',
     ];
 

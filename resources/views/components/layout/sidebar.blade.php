@@ -18,10 +18,10 @@
 >
     <nav class="p-3 space-y-1">
 
-        <x-layout.sidebar-item :href="route('dashboard')" label="Dashboard" />
+        <x-layout.sidebar-item :href="route('dashboard')" label="Dashboard" icon="dashboard" />
 
         @can('pos.access')
-            <x-layout.sidebar-item :href="route('pos.index')" label="Transaksi Kasir POS" />
+            <x-layout.sidebar-item :href="route('pos.index')" label="Transaksi Kasir POS" icon="pos" />
         @endcan
 
         @canany(['categories.view', 'products.view'])
@@ -29,10 +29,10 @@
                 Katalog
             </p>
             @can('categories.view')
-                <x-layout.sidebar-item :href="route('categories.index')" label="Kategori Produk" />
+                <x-layout.sidebar-item :href="route('categories.index')" label="Kategori Produk" icon="tag" />
             @endcan
             @can('products.view')
-                <x-layout.sidebar-item :href="route('products.index')" label="Produk" />
+                <x-layout.sidebar-item :href="route('products.index')" label="Produk" icon="box" />
             @endcan
         @endcanany
 
@@ -41,22 +41,22 @@
                 Pengaturan Hak Akses
             </p>
             @can('users.view')
-                <x-layout.sidebar-item :href="route('users.index')" label="Manajemen User" />
+                <x-layout.sidebar-item :href="route('users.index')" label="Manajemen User" icon="users" />
             @endcan
             @can('roles.view')
-                <x-layout.sidebar-item :href="route('roles.index')" label="Role & Permission" />
+                <x-layout.sidebar-item :href="route('roles.index')" label="Role & Permission" icon="shield-check" />
             @endcan
         @endcanany
 
-        @canany(['transactions.view.own', 'transactions.view.all', 'reports.view'])
+        @canany(['transactions.view-own', 'transactions.view-all', 'reports.view'])
             <p class="px-3 pt-4 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                 Laporan & Rekap
             </p>
-            @canany(['transactions.view.own', 'transactions.view.all'])
-                <x-layout.sidebar-item :href="route('transactions.index')" label="Riwayat Transaksi" />
+            @canany(['transactions.view-own', 'transactions.view-all'])
+                <x-layout.sidebar-item :href="route('transactions.index')" label="Riwayat Transaksi" icon="clock" />
             @endcanany
             @can('reports.view')
-                <x-layout.sidebar-item :href="route('reports.index')" label="Laporan Penjualan" />
+                <x-layout.sidebar-item :href="route('reports.index')" label="Laporan Penjualan" icon="chart-bar" />
             @endcan
         @endcanany
 

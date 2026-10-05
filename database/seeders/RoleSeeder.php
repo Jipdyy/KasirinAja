@@ -36,6 +36,6 @@ class RoleSeeder extends Seeder
         ];
 
         $cashierRole = Role::firstOrCreate(['name' => 'Cashier']);
-        $cashierRole->syncPermissions($administratorPermissions);
+        $cashierRole->syncPermissions($cashier);
     }
 }

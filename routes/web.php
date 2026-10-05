@@ -12,3 +12,5 @@ Route::prefix('dev-preview')->group(function () {
     Route::view('/print', 'dev-preview.print');
     Route::view('/navbar', 'dev-preview.navbar');
 });
+
+Route::view('/dashboard', 'dev-preview.app')->name('dashboard');
