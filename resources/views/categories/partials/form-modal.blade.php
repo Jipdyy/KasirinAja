@@ -5,7 +5,6 @@
         form: { id: null, name: '', description: '' },
 
         init() {
-            // Memantau perubahan payload pada store modal
             this.$watch('$store.modal.payload', (payload) => {
                 this.form = {
                     id: payload.id ?? null,
@@ -16,8 +15,8 @@
         },
 
         get actionUrl() {
-            return this.form.id 
-                ? `/categories/${this.form.id}` 
+            return this.form.id
+                ? `/categories/${this.form.id}`
                 : '/categories';
         },
 
@@ -26,12 +25,16 @@
         }
     }"
 >
-    <x-ui.modal id="category-form" :title="modalTitle">
+    <x-ui.modal id="category-form">
 
-        <form 
+        <x-slot:title>
+            <span x-text="modalTitle"></span>
+        </x-slot:title>
+
+        <form
             id="category-modal-form"
-            :action="actionUrl" 
-            method="POST" 
+            :action="actionUrl"
+            method="POST"
             class="space-y-4"
         >
             @csrf

@@ -1,16 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Models\Category;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::prefix('dev-preview')->group(function () {
-    Route::view('/guest', 'dev-preview.guest');
-    Route::view('/app', 'dev-preview.app');
-    Route::view('/print', 'dev-preview.print');
-    Route::view('/navbar', 'dev-preview.navbar');
-});
+Route::get('/categories', function () {
+    return view('categories.index', [
+        'categories' => Category::withCount('products')->paginate(10),
+    ]);
+})->name('categories.index');
 
-Route::view('/dashboard', 'dev-preview.app')->name('dashboard');
+Route::view('/dashboard', 'components.layouts.app')->name('dashboard');

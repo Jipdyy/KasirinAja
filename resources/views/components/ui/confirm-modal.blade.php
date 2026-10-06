@@ -1,4 +1,4 @@
-@props(['id', 'title' => 'Konfirmasi', 'message', 'method' => 'POST'])
+@props(['id', 'title' => 'Konfirmasi', 'message'])
 
 <x-ui.modal :id="$id" :title="$title">
     <p class="text-sm text-gray-600 dark:text-gray-300">
@@ -20,12 +20,8 @@
             class="inline"
         >
             @csrf
-            <template x-if="$store.modal.payload.method || '{{ $method }}' !== 'POST'">
-                <input
-                    type="hidden"
-                    name="_method"
-                    :value="$store.modal.payload.method || '{{ $method }}'"
-                >
+            <template x-if="$store.modal.payload.method && $store.modal.payload.method !== 'POST'">
+                <input type="hidden" name="_method" :value="$store.modal.payload.method">
             </template>
 
             <x-ui.button
