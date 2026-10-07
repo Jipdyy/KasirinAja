@@ -26,7 +26,7 @@ document.addEventListener('alpine:init', () => {
         payload: {},
 
         open(id, payload = {}) {
-            this.id = id;
+            this.current = id;
             this.payload = payload;
         },
 

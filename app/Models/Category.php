@@ -26,7 +26,7 @@ class Category extends Model
         });
     }
 
-    public function canBeDeleted(): Bool {
+    public function canBeDeleted(): bool {
         return $this->products()->withTrashed()->count() === 0;
     }
 }
