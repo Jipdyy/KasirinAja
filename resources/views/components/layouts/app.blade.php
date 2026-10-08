@@ -26,8 +26,8 @@
         </div>
     </main>
 
-    <div class="fixed top-20 right-4 z-50 space-y-2">
-        {{-- TODO: <x-ui.flash-message /> --}}
+    <div class="fixed top-7 left-1/2 -translate-x-1/2 z-50 space-y-2 w-full max-w-xs px-4">
+        <x-ui.flash-message />
     </div>
 
 </body>
