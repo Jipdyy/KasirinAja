@@ -11,7 +11,7 @@ class ShowCategoryController extends Controller
     public function __invoke(Category $category): View {
         return view('categories.show', [
             'category' => $category,
-            'products' => $category->product()->latest()->paginate(10),
+            'products' => $category->products()->latest()->paginate(10),
         ]);
     }
 }
