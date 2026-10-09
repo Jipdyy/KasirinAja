@@ -3,17 +3,19 @@
 namespace App\Http\Controllers\Products;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Support\Facades\Gate;
 
 class ShowProductController extends Controller
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request)
+    public function __invoke(Product $product)
     {
-        $this->authorize('view', $product);
+        Gate::authorize('view', $product);
+
+        $product->load('category');
 
         return view('products.show', compact('product'));
     }

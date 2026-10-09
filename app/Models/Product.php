@@ -25,7 +25,7 @@ class Product extends Model
     ];
 
     //relation
-    public function categories(): BelongsTo {
+    public function category(): BelongsTo {
         return $this->belongsTo(Category::class);
     }
 
@@ -54,36 +54,35 @@ class Product extends Model
         });
     }
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-    */
-    public function scopeSellAble(Builder $query): Builder {
+    public function isSellable(): bool
+    {
+        return $this->is_active && $this->stock > 0;
+    }
+
+    public function scopeSellAble(Builder $query): Builder{
+        return $query->where('is_active', true)
+                    ->where('stock', '>', 0);
+    }
+
+    public function scopeSoldOut(Builder $query): Builder{
         return $query->where(function (Builder $q) {
-            $q->where('is_active', true)
-            ->orWhere('stock', '>', 0);
+            $q->where('is_active', false)
+            ->orWhere('stock', '<=', 0);
         });
     }
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string|null $status
-     * @return \Illuminate\Database\Eloquent\Builder
-    */
     public function scopeStatusIs(Builder $query, ?string $status): Builder {
-        return $query->when($status, function (Builder $q, string $status) {
-            if ($status === 'Tersedia') {
-                $q->where(function (Builder $sub) {
-                    $sub->where('is_active', true)
-                        ->orWhere('stock', '>', 0);
-                });
-            } else if ($status === 'Habis') {
-                $q->where(function (Builder $sub) {
-                    $sub->where('is_active', false)
-                        ->orWhere('stock', '<=', 0);
-                });
-            }
-        });
+        return match ($status) {
+            'Tersedia' => $query->sellAble(),
+            'Habis'    => $query->soldOut(),
+            default    => $query,
+        };
+    }
+
+    protected function statusLabel(): Attribute {
+        return Attribute::make(
+            get: fn () => $this->isSellable() ? 'Tersedia' : 'Habis'
+        );
     }
 
     protected function formattedPrice(): Attribute {
@@ -101,12 +100,6 @@ class Product extends Model
 
                 return asset('images/placeholderFood.jpg');
             }
-        );
-    }
-
-    protected function statusLabel(): Attribute {
-        return Attribute::make(
-            get: fn () => ($this->is_active && $this->stock > 0) ? 'Tersedia' : 'Habis'
         );
     }
 }

@@ -1,6 +1,6 @@
 <x-layouts.app title="Kategori Produk">
 
-    {{-- Breadcrumb & Header --}}
+    {{-- Header --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
             <nav class="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 mb-1">
