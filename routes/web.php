@@ -17,6 +17,15 @@ use App\Http\Controllers\Products\{
     UpdateProductController,
     DestroyProductController,
 };
+use App\Http\Controllers\Users\{
+    IndexUserController,
+    ShowUserController,
+    StoreUserController,
+    UpdateUserController,
+    ToggleUserStatusController,
+    ResetUserPasswordController,
+};
+use GuzzleHttp\Middleware;
 
 Route::redirect('/', '/login');
 
@@ -31,15 +40,44 @@ Route::middleware('auth')->group(function () {
 
     Route::view('/dashboard', 'dashboard')->name('dashboard');
 
+    //user
+    Route::get('/users', IndexUserController::class)
+        ->middleware('permission:users.view')
+        ->name('users.index');
+
+    Route::get('/users/{user}', ShowUserController::class)
+        ->middleware('permission:users.view')
+        ->name('users.show');
+
+    Route::post('/users', StoreUserController::class)
+        ->middleware('permission:users.create')
+        ->name('users.store');
+
+    Route::put('/users/{user}', UpdateUserController::class)
+        ->middleware('permission:users.edit')
+        ->name('users.update');
+
+    Route::patch('/users/{user}/status', ToggleUserStatusController::class)
+        ->middleware('permission:users.deactivate')
+        ->name('users.status');
+
+    Route::patch('/users/{user}/password', ResetUserPasswordController::class) 
+        ->middleware('permission:users.reset-password') 
+        ->name('users.password');
+
     //categories
     Route::get('/categories/{category}', ShowCategoryController::class)->name('categories.show');
+
     Route::get('/categories', IndexCategoryController::class)->name('categories.index');
+
     Route::post('/categories', StoreCategoryController::class)
         ->middleware('permission:categories.create')
         ->name('categories.store');
+
     Route::put('/categories/{category}', UpdateCategoryController::class)
         ->middleware('permission:categories.edit')
         ->name('categories.update');
+
     Route::delete('/categories/{category}', DestroyCategoryController::class)
         ->middleware('permission:categories.delete')
         ->name('categories.destroy');
@@ -53,7 +91,6 @@ Route::middleware('auth')->group(function () {
 
 
     Route::view('/pos', 'dashboard')->name('pos.index');
-    Route::view('/users', 'dashboard')->name('users.index');
     Route::view('/roles', 'dashboard')->name('roles.index');
     Route::view('/transactions', 'dashboard')->name('transactions.index');
     Route::view('/reports', 'dashboard')->name('reports.index');

@@ -45,13 +45,13 @@ class User extends Authenticatable
      * @param string|null $keyword
      * @return \Illuminate\Database\Eloquent\Builder
     */
-    public function scopeSearch(Builder $query,?string $keyword): Builder {
-        return $query->when($keyword, function($q, $keyword) {
-            $q->where(function ($subQuery) use ($keyword) {
-                $subQuery->where('name', 'like', "%{$keyword}%")
-                         ->orWhere('email', 'like', "%{$keyword}%");
-            });
-        });
+    public function scopeSearch(Builder $query, ?string $term): Builder {
+        return $query->when($term, fn ($q) =>
+            $q->where(function ($q) use ($term) {
+                $q->where('name', 'like', "%{$term}%")
+                ->orWhere('email', 'like', "%{$term}%");
+            })
+        );
     }
 
     public function scopeWithRole(Builder $query, ?string $role): Builder {
