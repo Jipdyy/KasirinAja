@@ -25,6 +25,13 @@ use App\Http\Controllers\Users\{
     ToggleUserStatusController,
     ResetUserPasswordController,
 };
+use App\Http\Controllers\Roles\{
+    IndexRoleController,
+    ShowRoleController,
+    StoreRoleController,
+    UpdateRoleController,
+    DestroyRoleController,
+};
 use GuzzleHttp\Middleware;
 
 Route::redirect('/', '/login');
@@ -65,6 +72,15 @@ Route::middleware('auth')->group(function () {
         ->middleware('permission:users.reset-password') 
         ->name('users.password');
 
+    //roles
+    Route::prefix('roles')->name('roles.')->group(function () {
+        Route::get('/', IndexRoleController::class)->name('index');
+        Route::get('/{role}', ShowRoleController::class)->name('show');
+        Route::post('/', StoreRoleController::class)->name('store');
+        Route::put('/{role}', UpdateRoleController::class)->name('update');
+        Route::delete('/{role}', DestroyRoleController::class)->name('destroy');
+    });
+
     //categories
     Route::get('/categories/{category}', ShowCategoryController::class)->name('categories.show');
 
@@ -91,7 +107,6 @@ Route::middleware('auth')->group(function () {
 
 
     Route::view('/pos', 'dashboard')->name('pos.index');
-    Route::view('/roles', 'dashboard')->name('roles.index');
     Route::view('/transactions', 'dashboard')->name('transactions.index');
     Route::view('/reports', 'dashboard')->name('reports.index');
 
