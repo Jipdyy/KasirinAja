@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+
 class AuthController extends Controller
 {
     public function showLoginForm(): View
@@ -21,7 +22,7 @@ class AuthController extends Controller
 
         if ( !Auth::attempt($credentials, $request->boolean('remember')) ) {
             return back ()
-                ->withError(['email' => 'Email atau password salah'])
+                ->withErrors(['email' => 'Email atau password salah'])
                 ->onlyInput('email');
         };
 
@@ -34,6 +35,8 @@ class AuthController extends Controller
                 ->withErrors(['email' => 'Akun Anda dinonaktifkan. Hubungi administrator.'])
                 ->onlyInput('email');
         }
+
+        $request->user()->forceFill(['last_login_at' => now()])->saveQuietly();
 
         $request->session()->regenerate();
 

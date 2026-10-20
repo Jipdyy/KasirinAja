@@ -32,7 +32,14 @@ use App\Http\Controllers\Roles\{
     UpdateRoleController,
     DestroyRoleController,
 };
-use GuzzleHttp\Middleware;
+use App\Http\Controllers\Pos\{
+    IndexPosController,
+    StoreCartItemController,
+    UpdateCartItemController,
+    DestroyCartItemController,
+    DestroyCartController,
+    StoreTransactionController,
+};
 
 Route::redirect('/', '/login');
 
@@ -105,8 +112,16 @@ Route::middleware('auth')->group(function () {
     Route::put('/products/{product}', UpdateProductController::class)->name('products.update');
     Route::delete('/products/{product}', DestroyProductController::class)->name('products.destroy');
 
+    //POS
+    Route::prefix('pos')->name('pos.')->group(function () {
+        Route::get('/', IndexPosController::class)->name('index');
+        Route::post('/cart/{product}', StoreCartItemController::class)->name('cart.store');
+        Route::patch('/cart/{product}', UpdateCartItemController::class)->name('cart.update');
+        Route::delete('/cart/{product}', DestroyCartItemController::class)->name('cart.destroy');
+        Route::delete('/cart', DestroyCartController::class)->name('cart.clear');
+        Route::post('/checkout', StoreTransactionController::class)->name('checkout');
+    });
 
-    Route::view('/pos', 'dashboard')->name('pos.index');
     Route::view('/transactions', 'dashboard')->name('transactions.index');
     Route::view('/reports', 'dashboard')->name('reports.index');
 

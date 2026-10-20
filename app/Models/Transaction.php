@@ -13,9 +13,11 @@ class Transaction extends Model
     use Immutable;
 
     public const UPDATED_AT = null;
+    public const PAYMENT_TUNAI = 'tunai';
+    public const PAYMENT_QRIS = 'qris';
 
     protected $fillable = [
-        'invoice_code', 'user_id', 'total_items', 'total_amount', /*'payment_method'*/ 'cash_amount', 'change_amount', 'status'
+        'invoice_code', 'user_id', 'total_items', 'total_amount', 'payment_method', 'cash_amount', 'change_amount', 'status'
     ];
 
     protected $casts = [

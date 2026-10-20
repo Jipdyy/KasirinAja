@@ -16,14 +16,16 @@
             </p>
         </div>
 
-        <button
-            type="button"
-            @click="$store.modal.open('category-form', {})"
-            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium shadow-xs transition-colors shrink-0"
-        >
-            <x-ui.icon name="plus" class="w-4 h-4" />
-            Tambah Kategori
-        </button>
+        @can('create', App\Models\Category::class)
+            <button
+                type="button"
+                @click="$store.modal.open('category-form', {})"
+                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium shadow-xs transition-colors shrink-0"
+            >
+                <x-ui.icon name="plus" class="w-4 h-4" />
+                Tambah Kategori
+            </button>
+        @endcan
     </div>
 
     {{-- Table Card --}}
@@ -83,31 +85,35 @@
                                         <x-ui.icon name="eye" class="w-4 h-4" />
                                     </a>
 
-                                    <button
-                                        type="button"
-                                        @click="$store.modal.open('category-form', {
-                                            id: {{ $category->id }},
-                                            name: @js($category->name),
-                                            description: @js($category->description)
-                                        })"
-                                        class="p-1.5 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
-                                        title="Edit Kategori"
-                                    >
-                                        <x-ui.icon name="pencil" class="w-4 h-4" />
-                                    </button>
+                                    @can('update', $category)
+                                        <button
+                                            type="button"
+                                            @click="$store.modal.open('category-form', {
+                                                id: {{ $category->id }},
+                                                name: @js($category->name),
+                                                description: @js($category->description)
+                                            })"
+                                            class="p-1.5 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+                                            title="Edit Kategori"
+                                        >
+                                            <x-ui.icon name="pencil" class="w-4 h-4" />
+                                        </button>
+                                    @endcan
 
-                                    <button
-                                        type="button"
-                                        @click="$store.modal.open('confirm-delete-category', {
-                                            action: @js(route('categories.destroy', $category)),
-                                            method: 'DELETE',
-                                            confirmText: 'Ya, Hapus'
-                                        })"
-                                        class="p-1.5 rounded-lg text-gray-500 hover:text-rose-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
-                                        title="Hapus Kategori"
-                                    >
-                                        <x-ui.icon name="trash" class="w-4 h-4" />
-                                    </button>
+                                    @can('delete', $category)
+                                        <button
+                                            type="button"
+                                            @click="$store.modal.open('confirm-delete-category', {
+                                                action: @js(route('categories.destroy', $category)),
+                                                method: 'DELETE',
+                                                confirmText: 'Ya, Hapus'
+                                            })"
+                                            class="p-1.5 rounded-lg text-gray-500 hover:text-rose-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+                                            title="Hapus Kategori"
+                                        >
+                                            <x-ui.icon name="trash" class="w-4 h-4" />
+                                        </button>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>

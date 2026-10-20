@@ -26,6 +26,7 @@ class User extends Authenticatable
     protected $casts = [
         'is_active' => 'boolean',
         'password' => 'hashed',
+        'last_login_at' => 'datetime',
     ];
 
     public function transactions(): HasMany {
