@@ -44,6 +44,7 @@ use App\Http\Controllers\Transactions\{
     IndexTransactionController, 
     ShowTransactionController
 };
+use App\Http\Controllers\DashboardController;
 
 Route::redirect('/', '/login');
 
@@ -56,7 +57,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::view('/dashboard', 'dashboard')->name('dashboard');
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     //user
     Route::get('/users', IndexUserController::class)
@@ -132,7 +133,5 @@ Route::middleware('auth')->group(function () {
         Route::get('/', IndexTransactionController::class)->name('index');
         Route::get('/{transaction}', ShowTransactionController::class)->name('show');
     });
-    
-    Route::view('/reports', 'dashboard')->name('reports.index');
 
 });
