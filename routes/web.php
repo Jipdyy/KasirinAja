@@ -40,6 +40,10 @@ use App\Http\Controllers\Pos\{
     DestroyCartController,
     StoreTransactionController,
 };
+use App\Http\Controllers\Transactions\{
+    IndexTransactionController, 
+    ShowTransactionController
+};
 
 Route::redirect('/', '/login');
 
@@ -123,7 +127,12 @@ Route::middleware('auth')->group(function () {
     });
     Route::delete('/cart/{product}', DestroyCartItemController::class)->name('cart.destroy')->withTrashed();
 
-    Route::view('/transactions', 'dashboard')->name('transactions.index');
+    //transactions
+    Route::prefix('transactions')->name('transactions.')->group(function () {
+        Route::get('/', IndexTransactionController::class)->name('index');
+        Route::get('/{transaction}', ShowTransactionController::class)->name('show');
+    });
+    
     Route::view('/reports', 'dashboard')->name('reports.index');
 
 });
