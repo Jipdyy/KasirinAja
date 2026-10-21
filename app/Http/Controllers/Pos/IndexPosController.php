@@ -13,9 +13,6 @@ use Illuminate\View\View;
 
 class IndexPosController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
     public function __invoke(Request $request, CartService $cart): View
     {
         Gate::authorize('create', Transaction::class);
@@ -24,20 +21,13 @@ class IndexPosController extends Controller
             ->sellAble()
             ->search($request->query('search'))
             ->inCategory($request->query('category'))
-            ->with('category')
             ->orderBy('name')
-            ->paginate(24)
-            ->withQuerystring();
-        
-        $categories = Category::orderBy('name')->get();
+            ->get();
 
         return view('pos.index', [
-            'products' => $products,
-            'categories' => $categories,
-            'lines' => $cart->lines(),
-            'totalItems' => $cart->totalItems(),
-            'totalAmount' => $cart->totalAmount(),
-            'hasIssues' => $cart->hasIssues(),   
+            'products'     => $products,
+            'categories'   => Category::orderBy('name')->get(),
+            'cartSnapshot' => $cart->snapshot(),
         ]);
     }
 }

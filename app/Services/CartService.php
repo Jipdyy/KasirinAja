@@ -27,7 +27,7 @@ class CartService
 
         if ($qty > $product->stock) {
             throw ValidationException::withMessages([
-                'qty' => "Stok {$product->name} tersisa {$product->stock}"
+                'qty' => "Stok {$product->name} tersisa {$product->stock}",
             ]);
         }
 
@@ -63,11 +63,11 @@ class CartService
                 $product = $products->get($id);
 
                 $issue = match (true) {
-                    $product === null          => 'Produk tidak ditemukan',
-                    $product->trashed()        => 'Produk sudah dihapus',
-                    ! $product->is_available   => 'Produk tidak tersedia',
-                    $product->stock < $qty     => "Stok tersisa {$product->stock}",
-                    default                    => null,
+                    $product === null        => 'Produk tidak ditemukan',
+                    $product->trashed()      => 'Produk sudah dihapus',
+                    ! $product->is_active    => 'Produk tidak tersedia',
+                    $product->stock < $qty   => "Stok tersisa {$product->stock}",
+                    default                  => null,
                 };
 
                 return [
@@ -80,6 +80,28 @@ class CartService
             ->values();
     }
 
+    public function snapshot(): array {
+        $lines = $this->lines()
+            ->filter(fn ($line) => $line['product'] !== null)
+            ->values();
+
+        return [
+            'items' => $lines->map(fn ($line) => [
+                'id'          => $line['product']->id,
+                'name'        => $line['product']->name,
+                'price'       => $line['product']->price,
+                'qty'         => $line['qty'],
+                'stock'       => $line['product']->stock,
+                'subtotal'    => $line['subtotal'],
+                'issue'       => $line['issue'],
+                'update_url'  => route('pos.cart.update', $line['product']),
+                'destroy_url' => route('pos.cart.destroy', $line['product']),
+            ])->all(),
+            'total_items'  => (int) $lines->whereNull('issue')->sum('qty'),
+            'total_amount' => (int) $lines->sum('subtotal'),
+            'has_issues'   => $lines->contains(fn ($line) => $line['issue'] !== null),
+        ];
+    }
 
     public function hasIssues(): bool {
         return $this->lines()->contains(fn ($line) => $line['issue'] !== null);

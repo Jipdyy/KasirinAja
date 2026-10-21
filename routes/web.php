@@ -121,6 +121,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/cart', DestroyCartController::class)->name('cart.clear');
         Route::post('/checkout', StoreTransactionController::class)->name('checkout');
     });
+    Route::delete('/cart/{product}', DestroyCartItemController::class)->name('cart.destroy')->withTrashed();
 
     Route::view('/transactions', 'dashboard')->name('transactions.index');
     Route::view('/reports', 'dashboard')->name('reports.index');

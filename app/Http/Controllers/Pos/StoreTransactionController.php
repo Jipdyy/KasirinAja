@@ -57,14 +57,14 @@ class StoreTransactionController extends Controller
             $totalItems = array_sum($raw);
             $totalAmount = 0;
             foreach ($raw as $id => $qty) {
-                $totalAmount += $product[$id]->price * $qty;
+                $totalAmount += $products[$id]->price * $qty;
             }
             
             // TODO 4: tunai -> cash_amount harus >= total_amount, lalu
             //   change_amount = cash_amount - total_amount.
             //   qris  -> cash_amount null, change_amount 0.
             if ($validated['payment_method'] === Transaction::PAYMENT_TUNAI) {
-                $cash = (int) $validated('cash_amount');
+                $cash = (int) $validated['cash_amount'];
 
                 if ($cash < $totalAmount) {
                     throw ValidationException::withMessages([
@@ -85,10 +85,10 @@ class StoreTransactionController extends Controller
             //   nomor urut harian yang dihitung di dalam transaksi ini, atau
             //   tanggal + sufiks acak dengan retry saat unique gagal.
             $prefix = 'INV-' . now()->format('Ymd') . '-';
-            $last = Transaction::where('invoice_code', 'like', $prefix, '%')
+            $last = Transaction::where('invoice_code', 'like', $prefix . '%')
                 ->orderByDesc('invoice_code')
                 ->lockForUpdate()
-                ->vallue('invoice_code');
+                ->value('invoice_code');
             $next = $last ? ((int) substr($last, -4)) +1 : 1;
             $invoiceCode = $prefix . str_pad((string) $next, 4, '0', STR_PAD_LEFT);
             
