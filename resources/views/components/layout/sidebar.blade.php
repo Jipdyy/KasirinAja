@@ -52,11 +52,11 @@
             <p class="px-3 pt-4 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                 Laporan & Rekap
             </p>
-            @canany(['transactions.view-own', 'transactions.view-all'])
-                <x-layout.sidebar-item :href="route('transactions.index')" label="Riwayat Transaksi" icon="clock" />
+            @canany(['transactions.view-all', 'transactions.view-own'])
+                <x-layout.sidebar-item :href="route('transactions.index')" label="Riwayat Transaksi" />
             @endcanany
             @can('reports.view')
-                <x-layout.sidebar-item :href="route('reports.index')" label="Laporan Penjualan" icon="chart-bar" />
+                <x-layout.sidebar-item :href="route('reports.sales')" label="Laporan Penjualan" icon="chart-bar" />
             @endcan
         @endcanany
 

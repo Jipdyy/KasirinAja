@@ -1,4 +1,4 @@
-<x-layouts.app title="Kasir">
+<x-layouts.app title="Transaksi">
     <div x-data="posCart(@js($cartSnapshot))">
         <div class="grid gap-4 lg:grid-cols-3">
 

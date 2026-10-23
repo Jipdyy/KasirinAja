@@ -26,7 +26,7 @@ class IndexTransactionController extends Controller
         ]);
 
         $user = $request->user();
-        $canViewAll = $user->can('transactions.view');
+        $canViewAll = $user->can('transactions.view-all');
 
         $query = Transaction::query()->with('cashier');
 

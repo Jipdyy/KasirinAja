@@ -20,7 +20,7 @@ class StoreUserController extends Controller
          });
 
          return redirect()
-            ->route('user.index')
+            ->route('users.index')
             ->with('success', 'Pengguna berhasil ditambahkan.');
     }
 }

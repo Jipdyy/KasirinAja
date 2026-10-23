@@ -9,12 +9,12 @@ use Illuminate\Auth\Access\Response;
 class TransactionPolicy
 {
     public function viewAny(User $user): bool {
-        return $user->can('transactions.view')
+        return $user->can('transactions.view-all')
             || $user->can('transactions.view-own');
     }
 
     public function view(User $user, Transaction $transaction): bool {
-        if ($user->can('transactions.view')) {
+        if ($user->can('transactions.view-all')) {
             return true;
         }
 

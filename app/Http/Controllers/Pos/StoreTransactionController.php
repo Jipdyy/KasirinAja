@@ -26,20 +26,11 @@ class StoreTransactionController extends Controller
 
         $transaction = DB::transaction(function () use ($validated, $cart, $request) {
             $raw = $cart->raw();
-            // TODO 1: kunci baris produk yang ada di cart supaya dua kasir
-            //   tidak bisa menjual stok terakhir yang sama:
-            //   Product::whereIn('id', ...)->lockForUpdate()->get()->keyBy('id')
-            //   Kenapa lockForUpdate harus DI DALAM DB::transaction, bukan
-            //   sebelumnya?
             $products = Product::whereIn('id', array_keys($raw))
                 ->lockForUpdate()
                 ->get()
                 ->keyBy('id');
             
-            // TODO 2: untuk tiap item, cek ulang isSellable() dan stock >= qty
-            //   dari data yang BARU dikunci. Kalau gagal, lempar
-            //   ValidationException agar seluruh transaksi di-rollback.
-            //   Kenapa cek di cart saja tidak cukup?
             foreach($raw as $id => $qty) {
                 $product = $products->get($id);
 
@@ -52,17 +43,12 @@ class StoreTransactionController extends Controller
                 }
             }
             
-            // TODO 3: hitung total_items dan total_amount dari harga di
-            //   database (bukan dari request, bukan dari session).
             $totalItems = array_sum($raw);
             $totalAmount = 0;
             foreach ($raw as $id => $qty) {
                 $totalAmount += $products[$id]->price * $qty;
             }
-            
-            // TODO 4: tunai -> cash_amount harus >= total_amount, lalu
-            //   change_amount = cash_amount - total_amount.
-            //   qris  -> cash_amount null, change_amount 0.
+
             if ($validated['payment_method'] === Transaction::PAYMENT_TUNAI) {
                 $cash = (int) $validated['cash_amount'];
 
@@ -78,12 +64,6 @@ class StoreTransactionController extends Controller
                 $change = 0;
             }
 
-            
-            // TODO 5: buat invoice_code unik (maks 30 karakter), mis.
-            //   INV-20261020-0001. Pikirkan: kalau dua kasir checkout di
-            //   detik yang sama, bagaimana mencegah kode kembar? Pilihannya:
-            //   nomor urut harian yang dihitung di dalam transaksi ini, atau
-            //   tanggal + sufiks acak dengan retry saat unique gagal.
             $prefix = 'INV-' . now()->format('Ymd') . '-';
             $last = Transaction::where('invoice_code', 'like', $prefix . '%')
                 ->orderByDesc('invoice_code')
@@ -92,8 +72,6 @@ class StoreTransactionController extends Controller
             $next = $last ? ((int) substr($last, -4)) +1 : 1;
             $invoiceCode = $prefix . str_pad((string) $next, 4, '0', STR_PAD_LEFT);
             
-            // TODO 6: Transaction::create([...]) dengan user_id dari
-            //   $request->user()->id dan status 'completed'.
             $transaction = Transaction::create([
                 'invoice_code'   => $invoiceCode,
                 'user_id'        => $request->user()->id,
@@ -105,9 +83,6 @@ class StoreTransactionController extends Controller
                 'status'         => 'completed',
             ]);
             
-            // TODO 7: untuk tiap item: $transaction->items()->create([...])
-            //   dengan snapshot product_name, price, qty, subtotal,
-            //   lalu kurangi stok (decrement) produk terkait.
             foreach($raw as $id => $qty) {
                 $product = $products[$id];
 

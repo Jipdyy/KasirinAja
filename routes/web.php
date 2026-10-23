@@ -45,6 +45,7 @@ use App\Http\Controllers\Transactions\{
     ShowTransactionController
 };
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Reports\IndexSalesReportController;
 
 Route::redirect('/', '/login');
 
@@ -133,5 +134,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', IndexTransactionController::class)->name('index');
         Route::get('/{transaction}', ShowTransactionController::class)->name('show');
     });
+    
+    Route::get('/reports/sales', IndexSalesReportController::class)->name('reports.sales');
 
 });

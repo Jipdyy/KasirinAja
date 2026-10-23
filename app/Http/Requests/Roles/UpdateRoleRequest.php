@@ -34,7 +34,7 @@ class UpdateRoleRequest extends FormRequest
             ],
 
             'permissions' => ['nullable', 'array'],
-            'permissions.*' => ['string', 'exists:permission,name'],
+            'permissions.*' => ['string', 'exists:permissions,name'],
         ];
     }
 }

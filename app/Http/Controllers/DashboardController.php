@@ -36,17 +36,6 @@ class DashboardController extends Controller
             'items'        => (int) $scoped()->sum('total_items'),
         ];
 
-        // $rows = $scoped()
-        //     ->selectRaw('HOUR(created_at) as hour_of_day, SUM(total_amount) as total_sales')
-        //     ->groupByRaw('HOUR(created_at)')
-        //     ->pluck('total_sales', 'hour_of_day');
-
-        // $hourly = [];
-
-        // for ($h = self::OPEN_HOUR; $h <= self::CLOSE_HOUR; $h++) {
-        //     $hourly[$h] = (int) ($rows[$h] ?? 0);
-        // }
-
         $topProducts = TransactionItem::query()
             ->join('transactions', 'transactions.id', '=', 'transaction_items.transaction_id')
             ->where('transactions.status', 'completed')
