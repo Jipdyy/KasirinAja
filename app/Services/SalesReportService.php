@@ -93,13 +93,20 @@ class SalesReportService
 
     public function topProducts(string $start, string $end, int $limit = 10): Collection
     {
-        return $this->itemsBase($start, $end)
-            ->selectRaw('transaction_items.product_id, MAX(transaction_items.product_name) as name, SUM(transaction_items.qty) as total_qty, SUM(transaction_items.subtotal) as total')
+        return TransactionItem::query()
+            ->join('transactions', 'transactions.id', '=', 'transaction_items.transaction_id')
+            ->where('transactions.status', 'completed')
+            ->whereBetween('transactions.created_at', [$start . ' 00:00:00', $end . ' 23:59:59'])
+            ->selectRaw('transaction_items.product_id, MAX(transaction_items.product_name) as product_label, SUM(transaction_items.qty) as total_qty, SUM(transaction_items.subtotal) as total_sales')
             ->groupBy('transaction_items.product_id')
             ->orderByDesc('total_qty')
-            ->orderByDesc('total')
             ->limit($limit)
-            ->get();
+            ->get()
+            ->map(fn ($row) => (object) [
+                'name'  => $row->product_label,
+                'qty'   => (int) $row->total_qty,
+                'total' => (int) $row->total_sales,
+            ]);
     }
 
     public function dailyBreakdown(string $start, string $end): Collection
